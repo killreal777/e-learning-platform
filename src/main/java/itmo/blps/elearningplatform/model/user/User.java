@@ -1,10 +1,12 @@
 package itmo.blps.elearningplatform.model.user;
 
+import itmo.blps.elearningplatform.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,17 +16,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "\"user\"")
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+public class User extends BaseEntity implements UserDetails {
 
     @NotBlank
     @Size(max = 32)
