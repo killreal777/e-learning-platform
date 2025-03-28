@@ -3,8 +3,7 @@ package itmo.blps.elearningplatform.service;
 import itmo.blps.elearningplatform.dto.user.RegistrationRequest;
 import itmo.blps.elearningplatform.dto.user.UserDto;
 import itmo.blps.elearningplatform.mapper.UserMapper;
-import itmo.blps.elearningplatform.model.user.Role;
-import itmo.blps.elearningplatform.model.user.User;
+import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public Page<UserDto> getAllUsers(Pageable pageable, Role role) {
+    public Page<UserDto> getAllUsers(Pageable pageable, User.Role role) {
         if (role == null) {
             return userRepository.findAll(pageable).map(userMapper::toDto);
         } else {
@@ -43,12 +42,12 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
     }
 
-    public Page<User> findAllDisabledUsers(Pageable pageable) {
+    public Page<User> getAllDisabledUserEntities(Pageable pageable) {
         return userRepository.findAllByEnabledFalse(pageable);
     }
 
     public boolean isOwnerRegistered() {
-        return userRepository.existsByRole(Role.ROLE_OWNER);
+        return userRepository.existsByRole(User.Role.ROLE_OWNER);
     }
 
     public void updateUser(User user) {
@@ -59,7 +58,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public User createUser(RegistrationRequest request, Role role, boolean enabled) {
+    public User createUser(RegistrationRequest request, User.Role role, boolean enabled) {
         validateUsername(request.username());
         return userRepository.save(toUser(request, role, enabled));
     }
@@ -70,7 +69,7 @@ public class UserService {
         }
     }
 
-    private User toUser(RegistrationRequest request, Role role, boolean enabled) {
+    private User toUser(RegistrationRequest request, User.Role role, boolean enabled) {
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(role);

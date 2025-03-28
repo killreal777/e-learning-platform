@@ -1,6 +1,5 @@
-package itmo.blps.elearningplatform.model.course;
+package itmo.blps.elearningplatform.model;
 
-import itmo.blps.elearningplatform.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

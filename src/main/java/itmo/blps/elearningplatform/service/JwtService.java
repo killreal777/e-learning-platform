@@ -7,8 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import itmo.blps.elearningplatform.ELearningPlatformConfig;
-import itmo.blps.elearningplatform.model.user.Role;
-import itmo.blps.elearningplatform.model.user.User;
+import itmo.blps.elearningplatform.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -57,7 +56,7 @@ public class JwtService {
         return User.builder()
                 .id(claims.get("id", Integer.class))
                 .username(claims.getSubject())
-                .role(Role.valueOf(claims.get("role", String.class)))
+                .role(User.Role.valueOf(claims.get("role", String.class)))
                 .enabled(claims.get("enabled", Boolean.class))
                 .build();
     }

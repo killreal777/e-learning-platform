@@ -6,4 +6,4 @@ services:
       - 'POSTGRES_PASSWORD=qwerty12345'
       - 'POSTGRES_USER=killreal777'
     ports:
-      - '5432:5432'
+      - '15432:5432'

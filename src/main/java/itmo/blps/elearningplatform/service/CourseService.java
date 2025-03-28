@@ -3,10 +3,9 @@ package itmo.blps.elearningplatform.service;
 import itmo.blps.elearningplatform.dto.course.CourseDto;
 import itmo.blps.elearningplatform.dto.course.request.CreateCourseRequest;
 import itmo.blps.elearningplatform.mapper.CourseMapper;
-import itmo.blps.elearningplatform.model.course.Course;
-import itmo.blps.elearningplatform.model.course.Study;
-import itmo.blps.elearningplatform.model.user.Role;
-import itmo.blps.elearningplatform.model.user.User;
+import itmo.blps.elearningplatform.model.Course;
+import itmo.blps.elearningplatform.model.Study;
+import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.CourseRepository;
 import itmo.blps.elearningplatform.repository.StudyRepository;
 import itmo.blps.elearningplatform.repository.UserRepository;
@@ -42,7 +41,7 @@ public class CourseService {
     public void enrollStudent(Integer courseId, Integer studentId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundWithIdException(Course.class, courseId));
-        User student = userRepository.findByIdAndRole(studentId, Role.ROLE_STUDENT)
+        User student = userRepository.findByIdAndRole(studentId, User.Role.ROLE_STUDENT)
                 .orElseThrow(() -> new EntityNotFoundWithIdException("Student", studentId));
         Study study = new Study(student, course);
         studyRepository.save(study);

@@ -2,7 +2,7 @@ package itmo.blps.elearningplatform.controller;
 
 import itmo.blps.elearningplatform.dto.course.CourseDto;
 import itmo.blps.elearningplatform.dto.course.request.CreateCourseRequest;
-import itmo.blps.elearningplatform.model.user.User;
+import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,13 +40,13 @@ public class CourseController {
     @PostMapping("/{courseId}/enroll/{studentId}")
     public ResponseEntity<Void> enrollStudent(@PathVariable Integer courseId, @PathVariable Integer studentId) {
         courseService.enrollStudent(courseId, studentId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @PostMapping("/{courseId}/enroll/me")
-    public ResponseEntity<Void> enrollMe(@PathVariable Integer courseId, @AuthenticationPrincipal User me) {
-        courseService.enrollStudent(courseId, me.getId());
+    public ResponseEntity<Void> enrollMe(@PathVariable Integer courseId, @AuthenticationPrincipal User student) {
+        courseService.enrollStudent(courseId, student.getId());
         return ResponseEntity.ok().build();
     }
 }

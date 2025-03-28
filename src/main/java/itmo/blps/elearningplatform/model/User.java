@@ -1,6 +1,5 @@
-package itmo.blps.elearningplatform.model.user;
+package itmo.blps.elearningplatform.model;
 
-import itmo.blps.elearningplatform.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -58,5 +57,12 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public enum Role {
+        ROLE_OWNER,
+        ROLE_ADMIN,
+        ROLE_TEACHER,
+        ROLE_STUDENT
     }
 }

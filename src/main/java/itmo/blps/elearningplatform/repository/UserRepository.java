@@ -1,7 +1,6 @@
 package itmo.blps.elearningplatform.repository;
 
-import itmo.blps.elearningplatform.model.user.Role;
-import itmo.blps.elearningplatform.model.user.User;
+import itmo.blps.elearningplatform.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,13 +11,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByUsername(String username);
 
-    boolean existsByRole(Role role);
+    boolean existsByRole(User.Role role);
 
     Optional<User> findByUsername(String username);
 
     Page<User> findAllByEnabledFalse(Pageable pageable);
 
-    Page<User> findAllByRole(Role role, Pageable pageable);
+    Page<User> findAllByRole(User.Role role, Pageable pageable);
 
-    Optional<User> findByIdAndRole(Integer integer, Role role);
+    Optional<User> findByIdAndRole(Integer integer, User.Role role);
 }

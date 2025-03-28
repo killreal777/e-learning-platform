@@ -1,7 +1,5 @@
-package itmo.blps.elearningplatform.model.course;
+package itmo.blps.elearningplatform.model;
 
-import itmo.blps.elearningplatform.model.BaseEntity;
-import itmo.blps.elearningplatform.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

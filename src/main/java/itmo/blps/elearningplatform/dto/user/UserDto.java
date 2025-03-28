@@ -2,7 +2,7 @@ package itmo.blps.elearningplatform.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import itmo.blps.elearningplatform.model.user.Role;
+import itmo.blps.elearningplatform.model.User;
 
 public record UserDto(
 
@@ -16,6 +16,6 @@ public record UserDto(
 
         @Schema(example = "ROLE_OWNER")
         @JsonProperty(value = "role", required = true)
-        Role role
+        User.Role role
 ) {
 }

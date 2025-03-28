@@ -5,8 +5,7 @@ import itmo.blps.elearningplatform.dto.user.JwtResponse;
 import itmo.blps.elearningplatform.dto.user.RegistrationRequest;
 import itmo.blps.elearningplatform.dto.user.UserDto;
 import itmo.blps.elearningplatform.mapper.UserMapper;
-import itmo.blps.elearningplatform.model.user.Role;
-import itmo.blps.elearningplatform.model.user.User;
+import itmo.blps.elearningplatform.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,28 +39,28 @@ public class AuthService {
             throw new IllegalStateException("Owner is already registered");
         }
         boolean enabled = true;
-        User user = userService.createUser(request, Role.ROLE_OWNER, enabled);
+        User user = userService.createUser(request, User.Role.ROLE_OWNER, enabled);
         return new JwtResponse(jwtService.generateToken(user), userMapper.toDto(user));
     }
 
     public JwtResponse registerStudent(RegistrationRequest request) {
         boolean enabled = true;
-        User user = userService.createUser(request, Role.ROLE_STUDENT, enabled);
+        User user = userService.createUser(request, User.Role.ROLE_STUDENT, enabled);
         return new JwtResponse(jwtService.generateToken(user), userMapper.toDto(user));
     }
 
     public void applyAdminRegistrationRequest(RegistrationRequest request) {
         boolean enabled = false;
-        userService.createUser(request, Role.ROLE_ADMIN, enabled);
+        userService.createUser(request, User.Role.ROLE_ADMIN, enabled);
     }
 
     public void applyTeacherRegistrationRequest(RegistrationRequest request) {
         boolean enabled = false;
-        userService.createUser(request, Role.ROLE_TEACHER, enabled);
+        userService.createUser(request, User.Role.ROLE_TEACHER, enabled);
     }
 
     public Page<UserDto> getPendingRegistrationRequests(Pageable pageable) {
-        return userService.findAllDisabledUsers(pageable).map(userMapper::toDto);
+        return userService.getAllDisabledUserEntities(pageable).map(userMapper::toDto);
     }
 
     public void approveRegistrationRequest(Integer userId) {
