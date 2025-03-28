@@ -28,19 +28,15 @@ public class CourseService {
     private final StudyRepository studyRepository;
 
     public CourseDto createCourse(CreateCourseRequest request) {
-        log.info("Request {}", request);
         Course course = courseMapper.toEntity(request);
-        log.info("Creating course {}", course);
+        CourseMapper.linkEntities(course);
         course = courseRepository.save(course);
-        log.info("Created course {}", course);
-        CourseDto courseDto = courseMapper.toDto(course);
-        log.info("Mapped course {}", courseDto);
-        return courseDto;
-//        return courseMapper.toDto(courseRepository.save(courseMapper.toEntity(request)));
+        return courseMapper.toDto(course);
     }
 
     public Page<CourseDto> getCourses(Pageable pageable) {
-        return courseRepository.findAll(pageable).map(courseMapper::toDto);
+        Page<Course> courses = courseRepository.findAll(pageable);
+        return courses.map(courseMapper::toDto);
     }
 
     public CourseDto getCourse(Integer id) {

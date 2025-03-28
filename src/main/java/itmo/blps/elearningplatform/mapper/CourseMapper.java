@@ -9,4 +9,14 @@ import org.mapstruct.Mapper;
 public interface CourseMapper extends EntityMapper<CourseDto, Course> {
 
     Course toEntity(CreateCourseRequest request);
+
+    static void linkEntities(Course course) {
+        course.getHomeworks().forEach(homework -> {
+            homework.setCourse(course);
+        });
+        course.getTests().forEach(test -> {
+            TestMapper.linkEntities(test);
+            test.setCourse(course);
+        });
+    }
 }

@@ -1,16 +1,14 @@
 package itmo.blps.elearningplatform.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@ToString
+import java.util.List;
+
 @Entity
 @Table(name = "test")
 @Getter
@@ -28,12 +26,10 @@ public class Test extends BaseEntity {
     @Column(name = "description", nullable = false, length = 64)
     private String description;
 
+    @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Question> questions;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
-
-    @NotNull
-    @Min(1)
-    @Column(name = "max_score", nullable = false)
-    private Integer maxScore;
 }

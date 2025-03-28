@@ -3,6 +3,8 @@ package itmo.blps.elearningplatform.dto.course.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
+
 public record CreateTestRequest(
 
         @Schema(example = "test")
@@ -13,7 +15,7 @@ public record CreateTestRequest(
         @JsonProperty(value = "description", required = true)
         String description,
 
-        @Schema(example = "100")
-        @JsonProperty(value = "maxScore", required = true)
-        Integer maxScore) {
+        @JsonProperty(value = "questions", required = true)
+        List<CreateQuestionRequest> questions
+) {
 }
