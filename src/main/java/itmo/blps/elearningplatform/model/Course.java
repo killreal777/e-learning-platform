@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.List;
 import java.util.Set;
 
+@ToString
 @Entity
 @Table(name = "course")
 @Getter
@@ -21,7 +22,10 @@ public class Course extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Task> tasks;
+    private List<Homework> homeworks;
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Test> tests;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Study> studies;

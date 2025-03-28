@@ -11,10 +11,12 @@ import itmo.blps.elearningplatform.repository.StudyRepository;
 import itmo.blps.elearningplatform.repository.UserRepository;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseService {
@@ -26,7 +28,15 @@ public class CourseService {
     private final StudyRepository studyRepository;
 
     public CourseDto createCourse(CreateCourseRequest request) {
-        return courseMapper.toDto(courseRepository.save(courseMapper.toEntity(request)));
+        log.info("Request {}", request);
+        Course course = courseMapper.toEntity(request);
+        log.info("Creating course {}", course);
+        course = courseRepository.save(course);
+        log.info("Created course {}", course);
+        CourseDto courseDto = courseMapper.toDto(course);
+        log.info("Mapped course {}", courseDto);
+        return courseDto;
+//        return courseMapper.toDto(courseRepository.save(courseMapper.toEntity(request)));
     }
 
     public Page<CourseDto> getCourses(Pageable pageable) {

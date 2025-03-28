@@ -5,7 +5,7 @@ import itmo.blps.elearningplatform.dto.course.request.CreateCourseRequest;
 import itmo.blps.elearningplatform.model.Course;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(uses = {HomeworkMapper.class, TestMapper.class})
 public interface CourseMapper extends EntityMapper<CourseDto, Course> {
 
     Course toEntity(CreateCourseRequest request);

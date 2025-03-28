@@ -1,11 +1,15 @@
-package itmo.blps.elearningplatform.dto.course.request;
+package itmo.blps.elearningplatform.dto.course;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record CreateTaskRequest(
+public record TestDto(
 
-        @Schema(example = "task")
+        @Schema(example = "1")
+        @JsonProperty(value = "id", required = true)
+        Integer id,
+
+        @Schema(example = "test")
         @JsonProperty(value = "name", required = true)
         String name,
 

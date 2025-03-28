@@ -11,7 +11,10 @@ public record CreateCourseRequest(
         @JsonProperty(value = "name", required = true)
         String name,
 
-        @JsonProperty(value = "tasks", required = true)
-        List<CreateTaskRequest> tasks
+        @JsonProperty(value = "homeworks", required = true)
+        List<CreateHomeworkRequest> homeworks,
+
+        @JsonProperty(value = "tests", required = true)
+        List<CreateTestRequest> tests
 ) {
 }
