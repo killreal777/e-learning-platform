@@ -30,8 +30,8 @@ public record QuestionDto(
         String option4,
 
         @Schema(example = "1")
-        @JsonProperty(value = "correctOptionNumber", required = true)
-        Integer correctOptionNumber,
+        @JsonProperty(value = "correctOption", required = true)
+        Integer correctOption,
 
         @Schema(example = "100")
         @JsonProperty(value = "maxScore", required = true)

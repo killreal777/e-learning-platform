@@ -41,8 +41,8 @@ public class Question extends BaseEntity {
     @NotNull
     @Min(1)
     @Max(4)
-    @Column(name = "correct_option_number", nullable = false)
-    private Integer correctOptionNumber;
+    @Column(name = "correct_option", nullable = false)
+    private Integer correctOption;
 
     @NotNull
     @Min(1)

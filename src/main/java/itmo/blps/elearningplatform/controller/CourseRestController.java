@@ -1,9 +1,16 @@
 package itmo.blps.elearningplatform.controller;
 
 import itmo.blps.elearningplatform.dto.course.CourseDto;
+import itmo.blps.elearningplatform.dto.course.HomeworkAnswerDto;
+import itmo.blps.elearningplatform.dto.course.TestAnswerDto;
 import itmo.blps.elearningplatform.dto.course.request.CreateCourseRequest;
+import itmo.blps.elearningplatform.dto.course.request.CreateHomeworkAnswerRequest;
+import itmo.blps.elearningplatform.dto.course.request.CreateTestAnswerRequest;
+import itmo.blps.elearningplatform.dto.course.request.ReviewHomeworkAnswerRequest;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.service.CourseService;
+import itmo.blps.elearningplatform.service.HomeworkService;
+import itmo.blps.elearningplatform.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 public class CourseRestController {
 
     private final CourseService courseService;
+    private final TestService testService;
+    private final HomeworkService homeworkService;
 
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @PostMapping
@@ -48,5 +57,32 @@ public class CourseRestController {
     public ResponseEntity<Void> enrollMe(@PathVariable Integer courseId, @AuthenticationPrincipal User student) {
         courseService.enrollStudent(courseId, student.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/tests/{testId}/answers")
+    public ResponseEntity<TestAnswerDto> completeTest(
+            @PathVariable Integer testId,
+            @RequestBody CreateTestAnswerRequest request,
+            @AuthenticationPrincipal User student
+    ) {
+        return ResponseEntity.ok(testService.completeTest(testId, request, student));
+    }
+
+    @PostMapping("/homeworks/{homeworkId}/answers")
+    public ResponseEntity<HomeworkAnswerDto> completeHomework(
+            @PathVariable Integer homeworkId,
+            @RequestBody CreateHomeworkAnswerRequest request,
+            @AuthenticationPrincipal User student
+    ) {
+        return ResponseEntity.ok(homeworkService.completeHomework(homeworkId, request, student));
+    }
+
+    @PostMapping("/homeworks/answers/{answerId}")
+    public ResponseEntity<HomeworkAnswerDto> reviewHomework(
+            @PathVariable Integer answerId,
+            @RequestBody ReviewHomeworkAnswerRequest request,
+            @AuthenticationPrincipal User teacher
+    ) {
+        return ResponseEntity.ok(homeworkService.reviewHomework(answerId, request, teacher));
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public record CreateTestAnswerRequest(
 
         @Schema(example = "[1, 2, 3]")
-        @JsonProperty(value = "selectedAnswers", required = true)
-        List<Integer> selectedAnswers
+        @JsonProperty(value = "selectedOptions", required = true)
+        List<Integer> selectedOptions
 ) {
 }
