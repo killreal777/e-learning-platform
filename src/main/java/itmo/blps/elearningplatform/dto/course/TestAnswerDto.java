@@ -2,7 +2,6 @@ package itmo.blps.elearningplatform.dto.course;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import itmo.blps.elearningplatform.dto.user.UserDto;
-import itmo.blps.elearningplatform.model.Test;
 
 import java.util.List;
 
