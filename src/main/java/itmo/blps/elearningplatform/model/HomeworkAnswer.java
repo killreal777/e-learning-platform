@@ -42,6 +42,10 @@ public class HomeworkAnswer extends BaseEntity {
     @Column(name = "score")
     private Integer score;
 
+    @NotNull
+    @Column(name = "actual", nullable = false)
+    private Boolean actual = true;
+
     public enum Status {
         SENT, REVIEWED
     }

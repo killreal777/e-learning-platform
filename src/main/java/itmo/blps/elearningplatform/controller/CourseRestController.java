@@ -85,4 +85,10 @@ public class CourseRestController {
     ) {
         return ResponseEntity.ok(homeworkService.reviewHomework(answerId, request, teacher));
     }
+
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'TEACHER')")
+    @PostMapping("/{courseId}/students/{studentId}/score")
+    public ResponseEntity<Integer> getScore(@PathVariable Integer courseId, @PathVariable Integer studentId) {
+        return ResponseEntity.ok(courseService.getScore(courseId, studentId));
+    }
 }

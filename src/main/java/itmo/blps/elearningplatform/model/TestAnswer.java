@@ -1,6 +1,7 @@
 package itmo.blps.elearningplatform.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,4 +25,8 @@ public class TestAnswer extends BaseEntity {
 
     @OneToMany(mappedBy = "testAnswer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<QuestionAnswer> questionAnswers;
+
+    @NotNull
+    @Column(name = "actual", nullable = false)
+    private Boolean actual = true;
 }

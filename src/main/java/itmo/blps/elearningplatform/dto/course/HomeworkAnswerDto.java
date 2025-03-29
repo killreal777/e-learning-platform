@@ -29,6 +29,10 @@ public record HomeworkAnswerDto(
 
         @Schema(example = "100")
         @JsonProperty(value = "score", required = false)
-        Integer score
+        Integer score,
+
+        @Schema(example = "true")
+        @JsonProperty(value = "actual", required = true)
+        Boolean actual
 ) {
 }
