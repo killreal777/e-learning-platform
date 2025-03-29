@@ -184,7 +184,6 @@
                         <target>${java.version}</target>
                         <release>${java.version}</release>
                         <parameters>true</parameters>
-                        <proc>full</proc>
                         <compilerArgs>
                             <arg>-XDcompilePolicy=simple</arg>
                             <arg>--should-stop=ifError=FLOW</arg>
