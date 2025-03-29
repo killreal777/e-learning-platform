@@ -59,6 +59,7 @@ public class CourseRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/tests/{testId}/answers")
     public ResponseEntity<TestAnswerDto> completeTest(
             @PathVariable Integer testId,
@@ -68,6 +69,7 @@ public class CourseRestController {
         return ResponseEntity.ok(testService.completeTest(testId, request, student));
     }
 
+    @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/homeworks/{homeworkId}/answers")
     public ResponseEntity<HomeworkAnswerDto> completeHomework(
             @PathVariable Integer homeworkId,
@@ -77,6 +79,7 @@ public class CourseRestController {
         return ResponseEntity.ok(homeworkService.completeHomework(homeworkId, request, student));
     }
 
+    @PreAuthorize("hasRole('TEACHER')")
     @PostMapping("/homeworks/answers/{answerId}")
     public ResponseEntity<HomeworkAnswerDto> reviewHomework(
             @PathVariable Integer answerId,
@@ -88,7 +91,13 @@ public class CourseRestController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'TEACHER')")
     @PostMapping("/{courseId}/students/{studentId}/score")
-    public ResponseEntity<Integer> getScore(@PathVariable Integer courseId, @PathVariable Integer studentId) {
+    public ResponseEntity<Integer> getStudentScore(@PathVariable Integer courseId, @PathVariable Integer studentId) {
         return ResponseEntity.ok(courseService.getScore(courseId, studentId));
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/{courseId}/students/me/score")
+    public ResponseEntity<Integer> getMyScore(@PathVariable Integer courseId, @AuthenticationPrincipal User me) {
+        return ResponseEntity.ok(courseService.getScore(courseId, me.getId()));
     }
 }
