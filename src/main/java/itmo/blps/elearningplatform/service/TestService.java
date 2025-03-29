@@ -31,7 +31,7 @@ public class TestService {
         testAnswer.setTest(test);
         checkAnswers(test, testAnswer, request.selectedOptions());
         testAnswer = testAnswerRepository.save(testAnswer);
-        return testAnswerMapper.toDto(testAnswer);
+        return testAnswerMapper.toDtoWithTotalScore(testAnswer);
     }
 
     private void checkAnswers(Test test, TestAnswer answer, List<Integer> selectedOptions) {
