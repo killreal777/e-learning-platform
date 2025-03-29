@@ -42,6 +42,16 @@ public class HomeworkService {
 
     public HomeworkAnswerDto reviewHomework(Integer answerId, ReviewHomeworkAnswerRequest request, User teacher) {
         HomeworkAnswer answer = getHomeworkAnswerEntityById(answerId);
+        HomeworkAnswer lastActualAnswer = homeworkAnswerRepository
+                .findByHomeworkIdAndStudentIdAndActualTrue(
+                        answer.getHomework().getId(),
+                        answer.getStudent().getId()
+                ).orElse(null);
+        if (lastActualAnswer != null && lastActualAnswer.getScore() <= request.score()) {
+            lastActualAnswer.setActual(false);
+            homeworkAnswerRepository.save(lastActualAnswer);
+            answer.setActual(true);
+        }
         answer.setReviewer(teacher);
         answer.setScore(request.score());
         answer.setStatus(HomeworkAnswer.Status.REVIEWED);

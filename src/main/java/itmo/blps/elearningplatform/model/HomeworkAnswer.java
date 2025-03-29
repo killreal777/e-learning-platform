@@ -44,7 +44,7 @@ public class HomeworkAnswer extends BaseEntity {
 
     @NotNull
     @Column(name = "actual", nullable = false)
-    private Boolean actual = true;
+    private Boolean actual = false;
 
     public enum Status {
         SENT, REVIEWED
