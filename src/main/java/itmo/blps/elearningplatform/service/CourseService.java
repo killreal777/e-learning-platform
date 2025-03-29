@@ -11,6 +11,7 @@ import itmo.blps.elearningplatform.model.Study;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.*;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
+import itmo.blps.elearningplatform.service.exception.StudentIsNotEnrolledException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -78,5 +79,11 @@ public class CourseService {
                 .filter(Objects::nonNull)
                 .reduce(0, Integer::sum);
         return testsScore + homeworksScore;
+    }
+
+    public void validateStudentIsEnrolled(Integer studentId, Integer courseId) {
+        if (!studyRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
+            throw new StudentIsNotEnrolledException(studentId, courseId);
+        }
     }
 }

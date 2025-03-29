@@ -1,6 +1,7 @@
 package itmo.blps.elearningplatform.controller;
 
 import itmo.blps.elearningplatform.dto.ApiErrorResponse;
+import itmo.blps.elearningplatform.service.exception.StudentIsNotEnrolledException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,16 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND) // 400 по ТЗ
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ApiErrorResponse handleException(EntityNotFoundException e) {
         return createApiErrorResponse(e, HttpStatus.NOT_FOUND, "Entity not found");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudentIsNotEnrolledException.class)
+    public ApiErrorResponse handleException(StudentIsNotEnrolledException e) {
+        return createApiErrorResponse(e, HttpStatus.BAD_REQUEST, "Student is not enrolled");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

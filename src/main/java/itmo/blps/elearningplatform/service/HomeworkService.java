@@ -30,8 +30,11 @@ public class HomeworkService {
     private final HomeworkMapper homeworkMapper;
     private final HomeworkAnswerMapper homeworkAnswerMapper;
 
+    private final CourseService courseService;
+
     public HomeworkAnswerDto completeHomework(Integer homeworkId, CreateHomeworkAnswerRequest request, User student) {
         Homework homework = getHomeworkEntityById(homeworkId);
+        courseService.validateStudentIsEnrolled(student.getId(), homework.getCourse().getId());
         HomeworkAnswer answer = new HomeworkAnswer();
         answer.setStudent(student);
         answer.setHomework(homework);

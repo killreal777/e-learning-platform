@@ -5,6 +5,7 @@ import itmo.blps.elearningplatform.dto.course.request.CreateTestAnswerRequest;
 import itmo.blps.elearningplatform.mapper.TestAnswerMapper;
 import itmo.blps.elearningplatform.mapper.TestMapper;
 import itmo.blps.elearningplatform.model.*;
+import itmo.blps.elearningplatform.repository.StudyRepository;
 import itmo.blps.elearningplatform.repository.TestAnswerRepository;
 import itmo.blps.elearningplatform.repository.TestRepository;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
@@ -24,8 +25,12 @@ public class TestService {
     private final TestMapper testMapper;
     private final TestAnswerMapper testAnswerMapper;
 
+    private final CourseService courseService;
+    private final StudyRepository studyRepository;
+
     public TestAnswerDto completeTest(Integer testId, CreateTestAnswerRequest request, User student) {
         Test test = getTestEntityById(testId);
+        courseService.validateStudentIsEnrolled(student.getId(), test.getCourse().getId());
         TestAnswer testAnswer = new TestAnswer();
         testAnswer.setStudent(student);
         testAnswer.setTest(test);
