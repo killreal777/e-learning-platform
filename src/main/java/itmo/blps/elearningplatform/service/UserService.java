@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -23,11 +25,15 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public Page<UserDto> getAllUsers(Pageable pageable, User.Role role) {
+    public List<UserDto> getAllUsers(User.Role role) {
         if (role == null) {
-            return userRepository.findAll(pageable).map(userMapper::toDto);
+            return userRepository.findAll().stream()
+                    .map(userMapper::toDto)
+                    .toList();
         } else {
-            return userRepository.findAllByRole(role, pageable).map(userMapper::toDto);
+            return userRepository.findAllByRole(role).stream()
+                    .map(userMapper::toDto)
+                    .toList();
         }
     }
 
@@ -45,8 +51,8 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
     }
 
-    public Page<User> getAllDisabledUserEntities(Pageable pageable) {
-        return userRepository.findAllByEnabledFalse(pageable);
+    public List<User> getAllDisabledUserEntities() {
+        return userRepository.findAllByEnabledFalse();
     }
 
     public boolean isOwnerRegistered() {

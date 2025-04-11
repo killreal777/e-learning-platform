@@ -13,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -59,8 +61,10 @@ public class AuthService {
         userService.createUser(request, User.Role.ROLE_TEACHER, enabled);
     }
 
-    public Page<UserDto> getPendingRegistrationRequests(Pageable pageable) {
-        return userService.getAllDisabledUserEntities(pageable).map(userMapper::toDto);
+    public List<UserDto> getPendingRegistrationRequests() {
+        return userService.getAllDisabledUserEntities().stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     public void approveRegistrationRequest(Integer userId) {

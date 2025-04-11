@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -50,8 +52,8 @@ public class AuthRestController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @GetMapping("/register/requests")
-    public ResponseEntity<Page<UserDto>> getPendingRegistrationRequests(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(authService.getPendingRegistrationRequests(pageable));
+    public ResponseEntity<List<UserDto>> getPendingRegistrationRequests() {
+        return ResponseEntity.ok(authService.getPendingRegistrationRequests());
     }
 
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
