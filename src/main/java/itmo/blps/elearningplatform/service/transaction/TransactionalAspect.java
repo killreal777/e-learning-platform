@@ -27,16 +27,24 @@ public class TransactionalAspect {
         TransactionStatus status = transactionManager.getTransaction(def);
 
         try {
-            log.info(
-                    "Starting transaction with propagation: {}, isolation: {}",
-                    transactional.propagation(), transactional.isolation()
-            );
+            log.atInfo()
+                    .setMessage("Starting transaction")
+                    .addKeyValue("joinPoint", joinPoint.getSignature().getName())
+                    .addKeyValue("propagation", transactional.propagation())
+                    .addKeyValue("isolation", transactional.isolation())
+                    .log();
             Object result = joinPoint.proceed();
             transactionManager.commit(status);
-            log.info("Transaction committed successfully");
+            log.atInfo()
+                    .setMessage("Transaction committed successfully")
+                    .addKeyValue("joinPoint", joinPoint.getSignature().getName())
+                    .log();
             return result;
         } catch (Exception e) {
-            log.error("Transaction failed, rolling back", e);
+            log.atError()
+                    .setMessage("Transaction failed, rolling back")
+                    .addKeyValue("joinPoint", joinPoint.getSignature().getName())
+                    .log();
             transactionManager.rollback(status);
             throw e;
         }
