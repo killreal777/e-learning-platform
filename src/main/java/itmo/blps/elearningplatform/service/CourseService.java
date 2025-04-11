@@ -28,6 +28,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
+    //использовать service, а не repository
     private final UserRepository userRepository;
     private final StudyRepository studyRepository;
 

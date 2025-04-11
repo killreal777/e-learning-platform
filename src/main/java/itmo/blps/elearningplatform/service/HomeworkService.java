@@ -54,6 +54,8 @@ public class HomeworkService {
             lastActualAnswer.setActual(false);
             homeworkAnswerRepository.save(lastActualAnswer);
             answer.setActual(true);
+        } else if (lastActualAnswer == null) {
+            answer.setActual(true);
         }
         answer.setReviewer(teacher);
         answer.setScore(request.score());
