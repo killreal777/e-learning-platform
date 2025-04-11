@@ -9,6 +9,7 @@ import itmo.blps.elearningplatform.repository.StudyRepository;
 import itmo.blps.elearningplatform.repository.TestAnswerRepository;
 import itmo.blps.elearningplatform.repository.TestRepository;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
+import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class TestService {
     private final CourseService courseService;
     private final StudyRepository studyRepository;
 
+    @Transactional
     public TestAnswerDto completeTest(Integer testId, CreateTestAnswerRequest request, User student) {
         Test test = getTestEntityById(testId);
         courseService.validateStudentIsEnrolled(student.getId(), test.getCourse().getId());

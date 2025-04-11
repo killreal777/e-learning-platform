@@ -12,6 +12,7 @@ import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.HomeworkAnswerRepository;
 import itmo.blps.elearningplatform.repository.HomeworkRepository;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
+import itmo.blps.elearningplatform.service.transaction.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class HomeworkService {
 
     private final CourseService courseService;
 
+    @Transactional
     public HomeworkAnswerDto completeHomework(Integer homeworkId, CreateHomeworkAnswerRequest request, User student) {
         Homework homework = getHomeworkEntityById(homeworkId);
         courseService.validateStudentIsEnrolled(student.getId(), homework.getCourse().getId());
@@ -43,6 +45,7 @@ public class HomeworkService {
         return homeworkAnswerMapper.toDto(answer);
     }
 
+    @Transactional
     public HomeworkAnswerDto reviewHomework(Integer answerId, ReviewHomeworkAnswerRequest request, User teacher) {
         HomeworkAnswer answer = getHomeworkAnswerEntityById(answerId);
         HomeworkAnswer lastActualAnswer = homeworkAnswerRepository

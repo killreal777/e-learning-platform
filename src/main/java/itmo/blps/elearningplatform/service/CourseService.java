@@ -12,11 +12,14 @@ import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.*;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
 import itmo.blps.elearningplatform.service.exception.StudentIsNotEnrolledException;
+import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.util.Objects;
 
