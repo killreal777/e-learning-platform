@@ -1,12 +1,19 @@
 package itmo.blps.elearningplatform.repository;
 
 import itmo.blps.elearningplatform.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository {
+
+    User save(User user);
+
+    List<User> findAll();
+
+    Optional<User> findById(Integer id);
+
+    void delete(User user);
 
     boolean existsByUsername(String username);
 

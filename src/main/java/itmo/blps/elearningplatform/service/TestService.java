@@ -34,7 +34,7 @@ public class TestService {
         Test test = getTestEntityById(testId);
         courseService.validateStudentIsEnrolled(student.getId(), test.getCourse().getId());
         TestAnswer testAnswer = new TestAnswer();
-        testAnswer.setStudent(student);
+        testAnswer.setStudentId(student.getId());
         testAnswer.setTest(test);
         checkAnswers(test, testAnswer, request.selectedOptions());
         testAnswer = testAnswerRepository.save(testAnswer);

@@ -1,4 +1,7 @@
 log.json
+*.log
+*data.xml
+*.gz
 
 HELP.md
 target/

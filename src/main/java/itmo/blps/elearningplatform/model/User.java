@@ -1,6 +1,6 @@
 package itmo.blps.elearningplatform.model;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,36 +10,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.beans.Transient;
 import java.util.Collection;
+import java.util.Random;
 import java.util.Set;
 
-@Entity
-@Table(name = "\"user\"")
 @SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends BaseEntity implements UserDetails {
+public class User implements UserDetails {
+
+    @Min(1)
+    @NotNull
+    private Integer id;
 
     @NotBlank
     @Size(max = 32)
-    @Column(name = "username", nullable = false, unique = true, length = 32)
     private String username;
 
     @NotBlank
-    @Column(name = "password", nullable = false)
     private String password;
 
     @NotNull
-    @Column(name = "role", length = 16, nullable = false)
-    @Enumerated(EnumType.STRING)
     private Role role;
 
     @NotNull
-    @Column(name = "enabled", nullable = false)
     private Boolean enabled = false;
 
     @Override
+    @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Set.of(new SimpleGrantedAuthority(role.name()));
     }
@@ -59,10 +59,36 @@ public class User extends BaseEntity implements UserDetails {
         return enabled;
     }
 
+    @Override
+    @Transient
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    @Transient
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    @Transient
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     public enum Role {
         ROLE_OWNER,
         ROLE_ADMIN,
         ROLE_TEACHER,
         ROLE_STUDENT
+    }
+
+    @Override
+    public int hashCode() {
+        if (id == null) {
+            return super.hashCode();
+        }
+        return id.hashCode();
     }
 }

@@ -63,7 +63,7 @@ public class CourseService {
                 .orElseThrow(() -> new EntityNotFoundWithIdException(Course.class, courseId));
         User student = userRepository.findByIdAndRole(studentId, User.Role.ROLE_STUDENT)
                 .orElseThrow(() -> new EntityNotFoundWithIdException("Student", studentId));
-        Study study = new Study(student, course);
+        Study study = new Study(student.getId(), course);
         studyRepository.save(study);
     }
 

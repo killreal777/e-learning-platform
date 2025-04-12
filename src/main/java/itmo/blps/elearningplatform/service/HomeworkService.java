@@ -38,7 +38,7 @@ public class HomeworkService {
         Homework homework = getHomeworkEntityById(homeworkId);
         courseService.validateStudentIsEnrolled(student.getId(), homework.getCourse().getId());
         HomeworkAnswer answer = new HomeworkAnswer();
-        answer.setStudent(student);
+        answer.setStudentId(student.getId());
         answer.setHomework(homework);
         answer.setText(request.text());
         answer = homeworkAnswerRepository.save(answer);
@@ -51,7 +51,7 @@ public class HomeworkService {
         HomeworkAnswer lastActualAnswer = homeworkAnswerRepository
                 .findByHomeworkIdAndStudentIdAndActualTrue(
                         answer.getHomework().getId(),
-                        answer.getStudent().getId()
+                        answer.getStudentId()
                 ).orElse(null);
         if (lastActualAnswer != null && lastActualAnswer.getScore() <= request.score()) {
             lastActualAnswer.setActual(false);
@@ -60,7 +60,7 @@ public class HomeworkService {
         } else if (lastActualAnswer == null) {
             answer.setActual(true);
         }
-        answer.setReviewer(teacher);
+        answer.setReviewerId(teacher.getId());
         answer.setScore(request.score());
         answer.setStatus(HomeworkAnswer.Status.REVIEWED);
         answer = homeworkAnswerRepository.save(answer);

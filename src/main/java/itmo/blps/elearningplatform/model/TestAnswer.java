@@ -1,6 +1,7 @@
 package itmo.blps.elearningplatform.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 public class TestAnswer extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
-    User student;
+    @Min(1)
+    @NotNull
+    @Column(name = "student_id", nullable = false)
+    private Integer studentId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "test_id", referencedColumnName = "id")
