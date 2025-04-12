@@ -6,14 +6,10 @@ import itmo.blps.elearningplatform.mapper.UserMapper;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.UserRepository;
 import itmo.blps.elearningplatform.service.transaction.Transactional;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -23,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
     private final PasswordEncoder passwordEncoder;
 
     public List<UserDto> getAllUsers(User.Role role) {
@@ -73,6 +70,13 @@ public class UserService {
     public User createUser(RegistrationRequest request, User.Role role, boolean enabled) {
         validateUsername(request.username());
         return userRepository.save(toUser(request, role, enabled));
+    }
+
+    public User getUserEntityByIdAndRole(Integer userId, User.Role role) {
+        return userRepository.findByIdAndRole(userId, role)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("User not found with ID: %s and role: %s", userId, role)
+                ));
     }
 
     private void validateUsername(String username) {

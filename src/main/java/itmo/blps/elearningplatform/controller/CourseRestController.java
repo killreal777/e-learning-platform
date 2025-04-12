@@ -8,9 +8,7 @@ import itmo.blps.elearningplatform.dto.course.request.CreateHomeworkAnswerReques
 import itmo.blps.elearningplatform.dto.course.request.CreateTestAnswerRequest;
 import itmo.blps.elearningplatform.dto.course.request.ReviewHomeworkAnswerRequest;
 import itmo.blps.elearningplatform.model.User;
-import itmo.blps.elearningplatform.service.CourseService;
-import itmo.blps.elearningplatform.service.HomeworkService;
-import itmo.blps.elearningplatform.service.TestService;
+import itmo.blps.elearningplatform.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CourseRestController {
 
+    private final StudyService studyService;
     private final CourseService courseService;
-    private final TestService testService;
-    private final HomeworkService homeworkService;
+    private final CourseAnswerService courseAnswerService;
+    private final TestAnswerService testAnswerService;
+    private final HomeworkAnswerService homeworkAnswerService;
 
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     @PostMapping
@@ -48,14 +48,14 @@ public class CourseRestController {
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'TEACHER')")
     @PostMapping("/{courseId}/enroll/{studentId}")
     public ResponseEntity<Void> enrollStudent(@PathVariable Integer courseId, @PathVariable Integer studentId) {
-        courseService.enrollStudent(courseId, studentId);
+        studyService.enrollStudent(courseId, studentId);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @PostMapping("/{courseId}/enroll/me")
     public ResponseEntity<Void> enrollMe(@PathVariable Integer courseId, @AuthenticationPrincipal User student) {
-        courseService.enrollStudent(courseId, student.getId());
+        studyService.enrollStudent(courseId, student.getId());
         return ResponseEntity.ok().build();
     }
 
@@ -66,7 +66,7 @@ public class CourseRestController {
             @RequestBody CreateTestAnswerRequest request,
             @AuthenticationPrincipal User student
     ) {
-        return ResponseEntity.ok(testService.completeTest(testId, request, student));
+        return ResponseEntity.ok(testAnswerService.completeTest(testId, request, student));
     }
 
     @PreAuthorize("hasRole('STUDENT')")
@@ -76,7 +76,7 @@ public class CourseRestController {
             @RequestBody CreateHomeworkAnswerRequest request,
             @AuthenticationPrincipal User student
     ) {
-        return ResponseEntity.ok(homeworkService.completeHomework(homeworkId, request, student));
+        return ResponseEntity.ok(homeworkAnswerService.completeHomework(homeworkId, request, student));
     }
 
     @PreAuthorize("hasRole('TEACHER')")
@@ -86,18 +86,18 @@ public class CourseRestController {
             @RequestBody ReviewHomeworkAnswerRequest request,
             @AuthenticationPrincipal User teacher
     ) {
-        return ResponseEntity.ok(homeworkService.reviewHomework(answerId, request, teacher));
+        return ResponseEntity.ok(homeworkAnswerService.reviewHomework(answerId, request, teacher));
     }
 
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'TEACHER')")
     @PostMapping("/{courseId}/students/{studentId}/score")
     public ResponseEntity<Integer> getStudentScore(@PathVariable Integer courseId, @PathVariable Integer studentId) {
-        return ResponseEntity.ok(courseService.getScore(courseId, studentId));
+        return ResponseEntity.ok(courseAnswerService.getStudentCourseScore(studentId, courseId));
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/{courseId}/students/me/score")
     public ResponseEntity<Integer> getMyScore(@PathVariable Integer courseId, @AuthenticationPrincipal User me) {
-        return ResponseEntity.ok(courseService.getScore(courseId, me.getId()));
+        return ResponseEntity.ok(courseAnswerService.getStudentCourseScore(me.getId(), courseId));
     }
 }
