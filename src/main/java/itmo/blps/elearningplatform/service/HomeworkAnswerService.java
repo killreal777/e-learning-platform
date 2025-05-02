@@ -40,6 +40,15 @@ public class HomeworkAnswerService {
     @Transactional
     public HomeworkAnswerDto reviewHomework(Integer answerId, ReviewHomeworkAnswerRequest request, User teacher) {
         HomeworkAnswer answer = getHomeworkAnswerEntityById(answerId);
+        updateActual(answer, request);
+        answer.setReviewerId(teacher.getId());
+        answer.setScore(request.score());
+        answer.setStatus(HomeworkAnswer.Status.REVIEWED);
+        answer = homeworkAnswerRepository.save(answer);
+        return homeworkAnswerMapper.toDto(answer);
+    }
+
+    private void updateActual(HomeworkAnswer answer, ReviewHomeworkAnswerRequest request) {
         HomeworkAnswer lastActualAnswer = homeworkAnswerRepository
                 .findByHomeworkIdAndStudentIdAndActualTrue(
                         answer.getHomework().getId(),
@@ -52,11 +61,6 @@ public class HomeworkAnswerService {
         } else if (lastActualAnswer == null) {
             answer.setActual(true);
         }
-        answer.setReviewerId(teacher.getId());
-        answer.setScore(request.score());
-        answer.setStatus(HomeworkAnswer.Status.REVIEWED);
-        answer = homeworkAnswerRepository.save(answer);
-        return homeworkAnswerMapper.toDto(answer);
     }
 
     public Integer getStudentHomeworksScore(Integer studentId, Integer courseId) {

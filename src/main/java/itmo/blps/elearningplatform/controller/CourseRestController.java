@@ -60,7 +60,17 @@ public class CourseRestController {
     }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @PostMapping("/tests/{testId}/answers")
+    @PostMapping("/tests/{testId}/start")
+    public ResponseEntity<Void> startTest(
+            @PathVariable Integer testId,
+            @AuthenticationPrincipal User student
+    ) {
+        testAnswerService.startTest(testId, student);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/tests/{testId}/complete")
     public ResponseEntity<TestAnswerDto> completeTest(
             @PathVariable Integer testId,
             @RequestBody CreateTestAnswerRequest request,

@@ -6,9 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "test_answer")
 @Getter
@@ -28,9 +32,17 @@ public class TestAnswer extends BaseEntity {
     @OneToMany(mappedBy = "testAnswer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<QuestionAnswer> questionAnswers;
 
+    @CreatedDate
+    @NotNull
+    @Column(name = "startTime", nullable = false, updatable = false)
+    private LocalDateTime startTime;
+
+    @Column(name = "endTime", nullable = true)
+    private LocalDateTime endTime;
+
     @NotNull
     @Column(name = "actual", nullable = false)
-    private Boolean actual = true;
+    private Boolean actual = false;
 
     // TODO ABC mark
     // repo.save(testAnswer)

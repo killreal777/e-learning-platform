@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import itmo.blps.elearningplatform.dto.user.UserDto;
 import lombok.With;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @With
@@ -21,6 +22,12 @@ public record TestAnswerDto(
 
         @JsonProperty(value = "questionAnswers", required = true)
         List<QuestionAnswerDto> questionAnswers,
+
+        @JsonProperty(value = "startTime", required = true)
+        LocalDateTime startTime,
+
+        @JsonProperty(value = "endTime", required = false)
+        LocalDateTime endTime,
 
         @Schema(example = "true")
         @JsonProperty(value = "actual", required = true)

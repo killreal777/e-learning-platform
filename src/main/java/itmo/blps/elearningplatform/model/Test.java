@@ -1,6 +1,7 @@
 package itmo.blps.elearningplatform.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class Test extends BaseEntity {
 
     @OneToMany(mappedBy = "test", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Question> questions;
+
+    @Min(0)
+    @Column(name = "time_limit_seconds", nullable = true)
+    private Integer timeLimitSeconds;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")

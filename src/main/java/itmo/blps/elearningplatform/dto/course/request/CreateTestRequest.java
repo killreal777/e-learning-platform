@@ -16,6 +16,10 @@ public record CreateTestRequest(
         String description,
 
         @JsonProperty(value = "questions", required = true)
-        List<CreateQuestionRequest> questions
+        List<CreateQuestionRequest> questions,
+
+        @Schema(example = "30")
+        @JsonProperty(value = "timeLimitSeconds", required = false)
+        Integer timeLimitSeconds
 ) {
 }

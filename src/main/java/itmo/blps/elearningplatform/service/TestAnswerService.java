@@ -7,12 +7,15 @@ import itmo.blps.elearningplatform.model.*;
 import itmo.blps.elearningplatform.repository.TestAnswerRepository;
 import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestAnswerService {
@@ -33,16 +36,58 @@ public class TestAnswerService {
                 .reduce(0, Integer::sum);
     }
 
-    @Transactional
-    public TestAnswerDto completeTest(Integer testId, CreateTestAnswerRequest request, User student) {
+    public void startTest(Integer testId, User student) {
         Test test = testService.getTestEntityById(testId);
         studyService.validateStudentIsEnrolled(student.getId(), test.getCourse().getId());
+        testAnswerRepository.findByTestIdAndStudentIdAndEndTimeIsNull(testId, student.getId()).ifPresent(testAnswer -> {
+            String message = "Previous test attempt has not been finished yet";
+            log.atError()
+                    .setMessage(message)
+                    .addKeyValue("testId", testId)
+                    .addKeyValue("studentId", student.getId())
+                    .addKeyValue("testAnswerId", testAnswer.getId())
+                    .log();
+            throw new IllegalStateException(message);
+        });
         TestAnswer testAnswer = new TestAnswer();
         testAnswer.setStudentId(student.getId());
         testAnswer.setTest(test);
+        testAnswerRepository.save(testAnswer);
+    }
+
+    public TestAnswerDto completeTest(Integer testId, CreateTestAnswerRequest request, User student) {
+        TestAnswer testAnswer = testAnswerRepository.findByTestIdAndStudentIdAndEndTimeIsNull(testId, student.getId())
+                .orElseThrow(() -> {
+                    String message = "There is no started test attempt";
+                    log.atError()
+                            .setMessage(message)
+                            .addKeyValue("testId", testId)
+                            .addKeyValue("studentId", student.getId())
+                            .log();
+                    return new IllegalStateException(message);
+                });
+        testAnswer.setEndTime(LocalDateTime.now());
+        Test test = testService.getTestEntityById(testId);
         checkAnswers(test, testAnswer, request.selectedOptions());
+        updateActual(testAnswer);
         testAnswer = testAnswerRepository.save(testAnswer);
         return testAnswerMapper.toDtoWithTotalScore(testAnswer);
+    }
+
+    private void updateActual(TestAnswer answer) {
+        TestAnswer lastActualAnswer = testAnswerRepository
+                .findByTestIdAndStudentIdAndActualTrue(
+                        answer.getTest().getId(),
+                        answer.getStudentId()
+                ).orElse(null);
+        int currentAnswerTotalScore = testAnswerMapper.getTotalScore(answer);
+        if (lastActualAnswer != null && testAnswerMapper.getTotalScore(lastActualAnswer) <= currentAnswerTotalScore) {
+            lastActualAnswer.setActual(false);
+            testAnswerRepository.save(lastActualAnswer);
+            answer.setActual(true);
+        } else if (lastActualAnswer == null) {
+            answer.setActual(true);
+        }
     }
 
     private void checkAnswers(Test test, TestAnswer answer, List<Integer> selectedOptions) {
