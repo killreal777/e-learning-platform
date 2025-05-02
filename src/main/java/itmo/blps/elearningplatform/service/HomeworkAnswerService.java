@@ -24,6 +24,7 @@ public class HomeworkAnswerService {
 
     private final HomeworkService homeworkService;
     private final StudyService studyService;
+    private final MarkService markService;
 
     @Transactional
     public HomeworkAnswerDto completeHomework(Integer homeworkId, CreateHomeworkAnswerRequest request, User student) {
@@ -56,6 +57,7 @@ public class HomeworkAnswerService {
         answer.setScore(request.score());
         answer.setStatus(HomeworkAnswer.Status.REVIEWED);
         answer = homeworkAnswerRepository.save(answer);
+        markService.updateMark(answer.getStudentId(), answer.getHomework().getCourse().getId());
         return homeworkAnswerMapper.toDto(answer);
     }
 

@@ -39,6 +39,11 @@ public class CourseService {
                 .orElseThrow(() -> new EntityNotFoundWithIdException(Course.class, id));
     }
 
+    public Integer getMaxScore(Integer courseId) {
+        Course course = getCourseEntityById(courseId);
+        return courseMapper.getMaxScore(course);
+    }
+
     public Course getCourseEntityById(Integer id) {
         return courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundWithIdException(Course.class, id));

@@ -7,6 +7,7 @@ import itmo.blps.elearningplatform.dto.course.request.CreateCourseRequest;
 import itmo.blps.elearningplatform.dto.course.request.CreateHomeworkAnswerRequest;
 import itmo.blps.elearningplatform.dto.course.request.CreateTestAnswerRequest;
 import itmo.blps.elearningplatform.dto.course.request.ReviewHomeworkAnswerRequest;
+import itmo.blps.elearningplatform.model.Study;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.service.*;
 import lombok.RequiredArgsConstructor;
@@ -99,5 +100,17 @@ public class CourseRestController {
     @PostMapping("/{courseId}/students/me/score")
     public ResponseEntity<Integer> getMyScore(@PathVariable Integer courseId, @AuthenticationPrincipal User me) {
         return ResponseEntity.ok(scoreService.getStudentCourseScore(me.getId(), courseId));
+    }
+
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'TEACHER')")
+    @PostMapping("/{courseId}/students/{studentId}/mark")
+    public ResponseEntity<Study.Mark> getStudentMark(@PathVariable Integer courseId, @PathVariable Integer studentId) {
+        return ResponseEntity.ok(studyService.getMark(studentId, courseId));
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/{courseId}/students/me/mark")
+    public ResponseEntity<Study.Mark> getMyMark(@PathVariable Integer courseId, @AuthenticationPrincipal User me) {
+        return ResponseEntity.ok(studyService.getMark(me.getId(), courseId));
     }
 }

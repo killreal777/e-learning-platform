@@ -38,8 +38,8 @@ public class Study extends BaseEntity {
         A(0.9),
         B(0.8),
         C(0.7),
-        D(0.65),
-        E(0.6),
+        D(0.6),
+        E(0.5),
         FX(0);
 
         private final double minPercentage;

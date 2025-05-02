@@ -22,6 +22,7 @@ public class TestAnswerService {
 
     private final TestService testService;
     private final StudyService studyService;
+    private final MarkService markService;
 
     public Integer getStudentTestsScore(Integer studentId, Integer courseId) {
         return testAnswerRepository
@@ -41,7 +42,9 @@ public class TestAnswerService {
         testAnswer.setStudentId(student.getId());
         testAnswer.setTest(test);
         checkAnswers(test, testAnswer, request.selectedOptions());
+        updateActual(testAnswer);
         testAnswer = testAnswerRepository.save(testAnswer);
+        markService.updateMark(student.getId(), test.getCourse().getId());
         return testAnswerMapper.toDtoWithTotalScore(testAnswer);
     }
 
@@ -56,6 +59,22 @@ public class TestAnswerService {
             return questionAnswer;
         }).toList();
         answer.setQuestionAnswers(questionAnswers);
+    }
+
+    private void updateActual(TestAnswer answer) {
+        TestAnswer lastActualAnswer = testAnswerRepository
+                .findByTestIdAndStudentIdAndActualTrue(
+                        answer.getTest().getId(),
+                        answer.getStudentId()
+                ).orElse(null);
+        int currentAnswerTotalScore = testAnswerMapper.getTotalScore(answer);
+        if (lastActualAnswer != null && testAnswerMapper.getTotalScore(lastActualAnswer) <= currentAnswerTotalScore) {
+            lastActualAnswer.setActual(false);
+            testAnswerRepository.save(lastActualAnswer);
+            answer.setActual(true);
+        } else if (lastActualAnswer == null) {
+            answer.setActual(true);
+        }
     }
 
     private void setScore(Question question, QuestionAnswer answer) {

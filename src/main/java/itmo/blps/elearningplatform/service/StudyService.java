@@ -32,8 +32,19 @@ public class StudyService {
         }
     }
 
-    //TODO
     public void updateMark(Integer studentId, Integer courseId, Study.Mark mark) {
+        Study study = findStudyEntityByStudentIdAndCourseId(studentId, courseId);
+        study.setMark(mark);
+        studyRepository.save(study);
+    }
 
+    public Study.Mark getMark(Integer studentId, Integer courseId) {
+        Study study = findStudyEntityByStudentIdAndCourseId(studentId, courseId);
+        return study.getMark();
+    }
+
+    private Study findStudyEntityByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+        return studyRepository.findByStudentIdAndCourseId(studentId, courseId)
+                .orElseThrow(() -> new StudentIsNotEnrolledException(studentId, courseId));
     }
 }

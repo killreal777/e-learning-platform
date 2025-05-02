@@ -8,6 +8,8 @@ app:
 spring:
   application:
     name: e-learning-platform
+  main:
+    allow-circular-references: true
 
   jpa:
     generate-ddl: true
@@ -23,6 +25,7 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:15432/e-learning-platform}
     username: ${SPRING_DATASOURCE_USERNAME:killreal777}
     password: ${SPRING_DATASOURCE_PASSWORD:qwerty12345}
+
 
 springdoc:
   swagger-ui:
