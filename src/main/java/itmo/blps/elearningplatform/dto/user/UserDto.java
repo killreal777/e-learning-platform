@@ -16,6 +16,10 @@ public record UserDto(
 
         @Schema(example = "ROLE_OWNER")
         @JsonProperty(value = "role", required = true)
-        User.Role role
+        User.Role role,
+
+        @Schema(example = "true")
+        @JsonProperty(value = "enabled", required = true)
+        Boolean enabled
 ) {
 }

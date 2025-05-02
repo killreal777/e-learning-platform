@@ -51,14 +51,16 @@ public class AuthService {
         return new JwtResponse(jwtService.generateToken(user), userMapper.toDto(user));
     }
 
-    public void applyAdminRegistrationRequest(RegistrationRequest request) {
+    public UserDto applyAdminRegistrationRequest(RegistrationRequest request) {
         boolean enabled = false;
-        userService.createUser(request, User.Role.ROLE_ADMIN, enabled);
+        User user = userService.createUser(request, User.Role.ROLE_ADMIN, enabled);
+        return userMapper.toDto(user);
     }
 
-    public void applyTeacherRegistrationRequest(RegistrationRequest request) {
+    public UserDto applyTeacherRegistrationRequest(RegistrationRequest request) {
         boolean enabled = false;
-        userService.createUser(request, User.Role.ROLE_TEACHER, enabled);
+        User user = userService.createUser(request, User.Role.ROLE_TEACHER, enabled);
+        return userMapper.toDto(user);
     }
 
     public List<UserDto> getPendingRegistrationRequests() {
@@ -67,10 +69,11 @@ public class AuthService {
                 .toList();
     }
 
-    public void approveRegistrationRequest(Integer userId) {
+    public UserDto approveRegistrationRequest(Integer userId) {
         User user = userService.getEntityUserById(userId);
         user.setEnabled(true);
         userService.updateUser(user);
+        return userMapper.toDto(user);
     }
 
     public void rejectRegistrationRequest(Integer userId) {

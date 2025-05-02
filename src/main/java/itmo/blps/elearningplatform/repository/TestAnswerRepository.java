@@ -10,4 +10,6 @@ public interface TestAnswerRepository extends BaseEntityJpaRepository<TestAnswer
     Optional<TestAnswer> findByTestIdAndStudentIdAndActualTrue(Integer testId, Integer studentId);
 
     List<TestAnswer> findAllByStudentIdAndTestCourseIdAndActualTrue(Integer studentId, Integer courseId);
+
+    Optional<TestAnswer> findByTestIdAndStudentIdAndEndTimeIsNull(Integer testId, Integer studentId);
 }

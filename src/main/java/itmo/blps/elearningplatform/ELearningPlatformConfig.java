@@ -13,7 +13,8 @@ public record ELearningPlatformConfig(
 ) {
 
     public record SecurityConfig(
-            JwtConfig jwt
+            JwtConfig jwt,
+            @NotNull @DefaultValue("users_data.xml") String usersDataPath
     ) {
 
         public record JwtConfig(

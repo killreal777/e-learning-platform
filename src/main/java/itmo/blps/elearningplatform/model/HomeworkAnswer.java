@@ -16,9 +16,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class HomeworkAnswer extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private User student;
+    @Min(1)
+    @NotNull
+    @Column(name = "student_id", nullable = false)
+    private Integer studentId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "homework_id", referencedColumnName = "id")
@@ -29,9 +30,9 @@ public class HomeworkAnswer extends BaseEntity {
     @Column(name = "text", nullable = false, length = 512)
     private String text;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "reviewer_id", referencedColumnName = "id")
-    private User reviewer;
+    @Min(1)
+    @Column(name = "reviewer_id")
+    private Integer reviewerId;
 
     @NotNull
     @Enumerated(EnumType.STRING)

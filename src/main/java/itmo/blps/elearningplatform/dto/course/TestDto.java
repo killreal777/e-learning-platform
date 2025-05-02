@@ -20,6 +20,10 @@ public record TestDto(
         String description,
 
         @JsonProperty(value = "questions", required = true)
-        List<QuestionDto> questions
+        List<QuestionDto> questions,
+
+        @Schema(example = "30")
+        @JsonProperty(value = "timeLimitSeconds", required = false)
+        Integer timeLimitSeconds
 ) {
 }

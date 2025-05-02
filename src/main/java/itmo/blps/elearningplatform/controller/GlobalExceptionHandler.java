@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
     }
 
     private ApiErrorResponse createApiErrorResponse(Exception e, HttpStatus status, String message) {
+        e.printStackTrace();
         ApiErrorResponse response = new ApiErrorResponse(
                 message,
                 Integer.toString(status.value()),
