@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CourseAnswerService {
+public class ScoreService {
 
     private final TestAnswerService testAnswerService;
     private final HomeworkAnswerService homeworkAnswerService;

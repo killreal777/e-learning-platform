@@ -25,7 +25,7 @@ public class CourseRestController {
 
     private final StudyService studyService;
     private final CourseService courseService;
-    private final CourseAnswerService courseAnswerService;
+    private final ScoreService scoreService;
     private final TestAnswerService testAnswerService;
     private final HomeworkAnswerService homeworkAnswerService;
 
@@ -92,12 +92,12 @@ public class CourseRestController {
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'TEACHER')")
     @PostMapping("/{courseId}/students/{studentId}/score")
     public ResponseEntity<Integer> getStudentScore(@PathVariable Integer courseId, @PathVariable Integer studentId) {
-        return ResponseEntity.ok(courseAnswerService.getStudentCourseScore(studentId, courseId));
+        return ResponseEntity.ok(scoreService.getStudentCourseScore(studentId, courseId));
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/{courseId}/students/me/score")
     public ResponseEntity<Integer> getMyScore(@PathVariable Integer courseId, @AuthenticationPrincipal User me) {
-        return ResponseEntity.ok(courseAnswerService.getStudentCourseScore(me.getId(), courseId));
+        return ResponseEntity.ok(scoreService.getStudentCourseScore(me.getId(), courseId));
     }
 }

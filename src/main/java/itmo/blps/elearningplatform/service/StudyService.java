@@ -4,7 +4,6 @@ import itmo.blps.elearningplatform.model.Course;
 import itmo.blps.elearningplatform.model.Study;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.StudyRepository;
-import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
 import itmo.blps.elearningplatform.service.exception.StudentIsNotEnrolledException;
 import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,8 @@ public class StudyService {
         }
     }
 
-    public boolean existsByStudentIdAndCourseId(Integer studentId, Integer courseId) {
-        return studyRepository.existsByStudentIdAndCourseId(studentId, courseId);
+    //TODO
+    public void updateMark(Integer studentId, Integer courseId, Study.Mark mark) {
+
     }
 }
