@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Transactional {
+public @interface Tx {
     Propagation propagation() default Propagation.REQUIRED;
     Isolation isolation() default Isolation.DEFAULT;
 }

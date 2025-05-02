@@ -6,7 +6,6 @@ import itmo.blps.elearningplatform.mapper.CourseMapper;
 import itmo.blps.elearningplatform.model.Course;
 import itmo.blps.elearningplatform.repository.CourseRepository;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
-import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
-    @Transactional
     public CourseDto createCourse(CreateCourseRequest request) {
         Course course = courseMapper.toEntity(request);
         CourseMapper.linkEntities(course);

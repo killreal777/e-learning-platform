@@ -5,14 +5,19 @@ import itmo.blps.elearningplatform.dto.course.request.CreateTestAnswerRequest;
 import itmo.blps.elearningplatform.mapper.TestAnswerMapper;
 import itmo.blps.elearningplatform.model.*;
 import itmo.blps.elearningplatform.repository.TestAnswerRepository;
-import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestAnswerService {
@@ -24,6 +29,8 @@ public class TestAnswerService {
     private final StudyService studyService;
     private final MarkService markService;
 
+    private final PlatformTransactionManager transactionManager;
+
     public Integer getStudentTestsScore(Integer studentId, Integer courseId) {
         return testAnswerRepository
                 .findAllByStudentIdAndTestCourseIdAndActualTrue(studentId, courseId)
@@ -34,18 +41,32 @@ public class TestAnswerService {
                 .reduce(0, Integer::sum);
     }
 
-    @Transactional
     public TestAnswerDto completeTest(Integer testId, CreateTestAnswerRequest request, User student) {
-        Test test = testService.getTestEntityById(testId);
-        studyService.validateStudentIsEnrolled(student.getId(), test.getCourse().getId());
-        TestAnswer testAnswer = new TestAnswer();
-        testAnswer.setStudentId(student.getId());
-        testAnswer.setTest(test);
-        checkAnswers(test, testAnswer, request.selectedOptions());
-        updateActual(testAnswer);
-        testAnswer = testAnswerRepository.save(testAnswer);
-        markService.updateMark(student.getId(), test.getCourse().getId());
-        return testAnswerMapper.toDtoWithTotalScore(testAnswer);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        TransactionStatus status = transactionManager.getTransaction(def);
+
+        try {
+            log.atInfo().setMessage("Starting transaction").log();
+            Test test = testService.getTestEntityById(testId);
+            studyService.validateStudentIsEnrolled(student.getId(), test.getCourse().getId());
+            TestAnswer testAnswer = new TestAnswer();
+            testAnswer.setStudentId(student.getId());
+            testAnswer.setTest(test);
+            checkAnswers(test, testAnswer, request.selectedOptions());
+            updateActual(testAnswer);
+            testAnswer = testAnswerRepository.save(testAnswer);
+            markService.updateMark(student.getId(), test.getCourse().getId());
+            TestAnswerDto testAnswerDto = testAnswerMapper.toDtoWithTotalScore(testAnswer);
+            log.atInfo().setMessage("Transaction committed successfully").log();
+            transactionManager.commit(status);
+            return testAnswerDto;
+        } catch (Exception e) {
+            log.atError().setMessage("Transaction failed, rolling back").log();
+            transactionManager.rollback(status);
+            throw e;
+        }
     }
 
     private void checkAnswers(Test test, TestAnswer answer, List<Integer> selectedOptions) {

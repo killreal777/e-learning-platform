@@ -5,7 +5,6 @@ import itmo.blps.elearningplatform.model.Study;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.StudyRepository;
 import itmo.blps.elearningplatform.service.exception.StudentIsNotEnrolledException;
-import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,6 @@ public class StudyService {
     private final CourseService courseService;
     private final UserService userService;
 
-    @Transactional
     public void enrollStudent(Integer courseId, Integer studentId) {
         Course course = courseService.getCourseEntityById(courseId);
         User student = userService.getUserEntityByIdAndRole(studentId, User.Role.ROLE_STUDENT);

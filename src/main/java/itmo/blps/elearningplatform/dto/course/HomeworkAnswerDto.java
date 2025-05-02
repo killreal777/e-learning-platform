@@ -10,9 +10,6 @@ public record HomeworkAnswerDto(
         @JsonProperty(value = "id", required = true)
         Integer id,
 
-        @JsonProperty(value = "student", required = true)
-        UserDto student,
-
         @JsonProperty(value = "homework", required = true)
         HomeworkDto homework,
 

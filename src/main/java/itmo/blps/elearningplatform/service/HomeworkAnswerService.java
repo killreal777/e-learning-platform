@@ -9,12 +9,17 @@ import itmo.blps.elearningplatform.model.HomeworkAnswer;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.HomeworkAnswerRepository;
 import itmo.blps.elearningplatform.service.exception.EntityNotFoundWithIdException;
-import itmo.blps.elearningplatform.service.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HomeworkAnswerService {
@@ -26,7 +31,8 @@ public class HomeworkAnswerService {
     private final StudyService studyService;
     private final MarkService markService;
 
-    @Transactional
+    private final PlatformTransactionManager transactionManager;
+
     public HomeworkAnswerDto completeHomework(Integer homeworkId, CreateHomeworkAnswerRequest request, User student) {
         Homework homework = homeworkService.getHomeworkEntityById(homeworkId);
         studyService.validateStudentIsEnrolled(student.getId(), homework.getCourse().getId());
@@ -38,9 +44,33 @@ public class HomeworkAnswerService {
         return homeworkAnswerMapper.toDto(answer);
     }
 
-    @Transactional
     public HomeworkAnswerDto reviewHomework(Integer answerId, ReviewHomeworkAnswerRequest request, User teacher) {
-        HomeworkAnswer answer = getHomeworkAnswerEntityById(answerId);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        TransactionStatus status = transactionManager.getTransaction(def);
+
+        try {
+            log.atInfo().setMessage("Starting transaction").log();
+            HomeworkAnswer answer = getHomeworkAnswerEntityById(answerId);
+            updateActual(answer, request);
+            answer.setReviewerId(teacher.getId());
+            answer.setScore(request.score());
+            answer.setStatus(HomeworkAnswer.Status.REVIEWED);
+            answer = homeworkAnswerRepository.save(answer);
+            markService.updateMark(answer.getStudentId(), answer.getHomework().getCourse().getId());
+            HomeworkAnswerDto answerDto = homeworkAnswerMapper.toDto(answer);
+            log.atInfo().setMessage("Transaction committed successfully").log();
+            transactionManager.commit(status);
+            return answerDto;
+        } catch (Exception e) {
+            log.atError().setMessage("Transaction failed, rolling back").log();
+            transactionManager.rollback(status);
+            throw e;
+        }
+    }
+
+    private void updateActual(HomeworkAnswer answer, ReviewHomeworkAnswerRequest request) {
         HomeworkAnswer lastActualAnswer = homeworkAnswerRepository
                 .findByHomeworkIdAndStudentIdAndActualTrue(
                         answer.getHomework().getId(),
@@ -53,12 +83,6 @@ public class HomeworkAnswerService {
         } else if (lastActualAnswer == null) {
             answer.setActual(true);
         }
-        answer.setReviewerId(teacher.getId());
-        answer.setScore(request.score());
-        answer.setStatus(HomeworkAnswer.Status.REVIEWED);
-        answer = homeworkAnswerRepository.save(answer);
-        markService.updateMark(answer.getStudentId(), answer.getHomework().getCourse().getId());
-        return homeworkAnswerMapper.toDto(answer);
     }
 
     public Integer getStudentHomeworksScore(Integer studentId, Integer courseId) {

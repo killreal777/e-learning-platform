@@ -2,7 +2,6 @@ package itmo.blps.elearningplatform.dto.course;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import itmo.blps.elearningplatform.dto.user.UserDto;
 import lombok.With;
 
 import java.util.List;
@@ -12,9 +11,6 @@ public record TestAnswerDto(
 
         @JsonProperty(value = "id", required = true)
         Integer id,
-
-        @JsonProperty(value = "student", required = true)
-        UserDto student,
 
         @JsonProperty(value = "test", required = true)
         TestDto test,

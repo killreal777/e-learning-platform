@@ -5,7 +5,6 @@ import itmo.blps.elearningplatform.dto.user.UserDto;
 import itmo.blps.elearningplatform.mapper.UserMapper;
 import itmo.blps.elearningplatform.model.User;
 import itmo.blps.elearningplatform.repository.UserRepository;
-import itmo.blps.elearningplatform.service.transaction.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,17 +55,14 @@ public class UserService {
         return userRepository.existsByRole(User.Role.ROLE_OWNER);
     }
 
-    @Transactional
     public void updateUser(User user) {
         userRepository.save(user);
     }
 
-    @Transactional
     public void deleteUser(User user) {
         userRepository.delete(user);
     }
 
-    @Transactional
     public User createUser(RegistrationRequest request, User.Role role, boolean enabled) {
         validateUsername(request.username());
         return userRepository.save(toUser(request, role, enabled));

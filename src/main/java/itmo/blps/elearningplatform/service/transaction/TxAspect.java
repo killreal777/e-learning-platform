@@ -14,15 +14,15 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class TransactionalAspect {
+public class TxAspect {
 
     private final PlatformTransactionManager transactionManager;
 
-    @Around("@annotation(transactional)")
-    public Object manageTransaction(ProceedingJoinPoint joinPoint, Transactional transactional) throws Throwable {
+    @Around("@annotation(tx)")
+    public Object manageTransaction(ProceedingJoinPoint joinPoint, Tx tx) throws Throwable {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-        def.setPropagationBehavior(transactional.propagation().value());
-        def.setIsolationLevel(transactional.isolation().value());
+        def.setPropagationBehavior(tx.propagation().value());
+        def.setIsolationLevel(tx.isolation().value());
 
         TransactionStatus status = transactionManager.getTransaction(def);
 
@@ -30,8 +30,8 @@ public class TransactionalAspect {
             log.atInfo()
                     .setMessage("Starting transaction")
                     .addKeyValue("joinPoint", joinPoint.getSignature().getName())
-                    .addKeyValue("propagation", transactional.propagation())
-                    .addKeyValue("isolation", transactional.isolation())
+                    .addKeyValue("propagation", tx.propagation())
+                    .addKeyValue("isolation", tx.isolation())
                     .log();
             Object result = joinPoint.proceed();
             transactionManager.commit(status);
