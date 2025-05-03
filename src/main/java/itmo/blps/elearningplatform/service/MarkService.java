@@ -2,11 +2,10 @@ package itmo.blps.elearningplatform.service;
 
 import itmo.blps.elearningplatform.model.Study;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Lazy))
+@RequiredArgsConstructor
 public class MarkService {
 
     private final ScoreService scoreService;
