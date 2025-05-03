@@ -48,10 +48,13 @@ public class HomeworkAnswerService {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        def.setName("HomeworkAnswerService.reviewHomework");
         TransactionStatus status = transactionManager.getTransaction(def);
-
         try {
-            log.atInfo().setMessage("Starting transaction").log();
+            log.atInfo()
+                    .setMessage("Starting transaction")
+                    .addKeyValue("transactionName", def.getName())
+                    .log();
             HomeworkAnswer answer = getHomeworkAnswerEntityById(answerId);
             updateActual(answer, request);
             answer.setReviewerId(teacher.getId());
@@ -60,11 +63,17 @@ public class HomeworkAnswerService {
             answer = homeworkAnswerRepository.save(answer);
             markService.updateMark(answer.getStudentId(), answer.getHomework().getCourse().getId());
             HomeworkAnswerDto answerDto = homeworkAnswerMapper.toDto(answer);
-            log.atInfo().setMessage("Transaction committed successfully").log();
+            log.atInfo()
+                    .setMessage("Transaction committed successfully")
+                    .addKeyValue("transactionName", def.getName())
+                    .log();
             transactionManager.commit(status);
             return answerDto;
         } catch (Exception e) {
-            log.atError().setMessage("Transaction failed, rolling back").log();
+            log.atError()
+                    .setMessage("Transaction failed, rolling back")
+                    .addKeyValue("transactionName", def.getName())
+                    .log();
             transactionManager.rollback(status);
             throw e;
         }
