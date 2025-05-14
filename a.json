@@ -1,0 +1,37 @@
+{
+  "name": "course1",
+  "homeworks": [
+    {
+      "name": "homework1",
+      "description": "description of homework1",
+      "maxScore": 100
+    }
+  ],
+  "tests": [
+    {
+      "name": "test1",
+      "durationSeconds": "10",
+      "description": "description of test 1",
+      "questions": [
+        {
+          "text": "text of question1",
+          "option1": "option1",
+          "option2": "option2",
+          "option3": "option3",
+          "option4": "option4",
+          "correctOption": 1,
+          "maxScore": 25
+        },
+        {
+          "text": "text of question2",
+          "option1": "option1",
+          "option2": "option2",
+          "option3": "option3",
+          "option4": "option4",
+          "correctOption": 2,
+          "maxScore": 25
+        }
+      ]
+    }
+  ]
+}
